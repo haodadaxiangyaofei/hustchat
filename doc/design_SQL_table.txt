@@ -1,0 +1,26 @@
+mydatabase
+	user_table：		记录用户信息;
+		user_id(int)		用户名
+		user_name(char*)		用户昵称
+		user_pwd(char*)		用户密码
+
+	friend_table：		记录用户的好友关系，每对好友占两个条目（为了后面的昵称等功能最好AB和BA各占一个条目）
+		key(int)			X
+		user_id(int)		用户名
+		friend_id(int)		该用户的一名好友
+
+	room_table：		记录房间信息
+		room_id(int)		房间名
+		room_name(char*)		房间名称
+		room_pwd(char*)		房间密码
+
+	group_table：		记录房间和成员的关系
+		key(int)			X
+		room_id(int)		房间名
+		member_id(int)		该房间内的一名成员
+
+	message_table		接收的消息列表
+		timestamp(char*)		消息发送时间
+		from_id(int)		消息来源
+		to_id(int)			消息目的地
+		content(char*)		消息文本

@@ -1,0 +1,67 @@
+交互简介
+	(C) login					登陆，检查id和psswd正确则登陆
+	(D) user_to_user			直接发送到对应user
+	(U) user_to_room			需要查找group_table，广播所有room中的成员
+	(U) new_user				注册新用户，写user_table,并发送成功信息到user
+	( ) add_friend				尝试添加好友，发送到对应user等待确认，允许则写入friend_table，并发送成功信息到user
+	( ) delete_friend			删除好友，写friend_table
+	(U) new_room				创建房间，写room_table，初始化添加成员还需要写group_list,并发送成功信息到user
+	( ) enter_room				请求进入房间，发送到群主user等待确认，若允许则写group_table，并发送成功信息到user
+	( ) quit_room				退出房间，写group_table
+
+	C: clear 已经完成
+	D: doing 正在实现
+	U: undoing 尚未开工
+	 : 尚未设计交互数据流
+	
+
+------------------------------------------------------------------------------------------
+login
+	C：	提交user_id, psswd
+		……
+		返回值：
+			success		进入已登陆界面
+			fail		显示错误，停留在登陆界面
+			timeout		显示超时		
+	S：	查询user_table判断密码是否正确:
+			若正确，返回success到client
+			若错误，返回fail到client
+------------------------------------------------------------------------------------------
+user_user
+	C：	提交user_id_from，user_id_to，content
+		在会话显示content，但是有一个“转圈”标记
+		……
+		返回值：
+			success		标记去除
+			fail,timeout 	替换为一个“错误”标记
+	S：	将消息转发到user_id_to（不在线，没有链接则不转发）
+------------------------------------------------------------------------------------------
+user_room
+	C：	提交user_id_from，room_id_to，content
+		在会话显示content，但是有一个“转圈”标记
+		……
+		返回值：
+			success		标记去除
+			fail,timeout 	替换为一个“错误”标记
+	S：	查询group_table找到所有room_id_to的成员：
+		将消息广播给所有成员
+------------------------------------------------------------------------------------------			
+new_user
+	C：	提交user_name,user_pwd
+		……
+		返回值：
+			user_id		接受到一个分配的user_id
+			timeout		显示超时
+	S：	生成一个user_id并返回，在user_table中设置一个条目
+------------------------------------------------------------------------------------------
+new_room
+	C：	提交room_name,room_pwd,member_ids(数组)
+		……
+		返回值：
+			room_id		接受到一个分配的room_id
+			timeout		显示超时
+	S：	生成一个room_id并返回，在room_table中设置一个条目
+		为member_ids中的每个用户id在group_table中添加一个条目
+
+
+
